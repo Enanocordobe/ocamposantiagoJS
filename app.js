@@ -11,7 +11,7 @@ if(dinero >= deudaTotal){
  //Funciones
 function mostrarRutinas() {
     let dia = prompt(`${cliente} ¿Dime, en que dia estamos?: `); 
-switch (dia) {
+switch (dia.toLowerCase()) {
     case "lunes":
          alert(` ${cliente} en el dia de hoy tu rutina se basara en :
          Prebanca mancuerna 4 x 10
