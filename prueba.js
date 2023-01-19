@@ -1,9 +1,9 @@
 //Variables
-const cards = document.getElementById("cards");
-const items = document.getElementById("items");
-const templateCard = document.getElementById("template-card").content;
-const templateFooter = document.getElementById("template-footer").content;
-const templateCarrito = document.getElementById("template-carrito").content;
+const tarjetas = document.getElementById("tarjetas");
+const mercaderia = document.getElementById("mercaderia");
+const tarjetaProductos = document.getElementById("tarjetas-prod").content;
+const calculadoraPie = document.getElementById("calculadora").content;
+const templateCarrito = document.getElementById("carreta").content;
 const fragment = document.createDocumentFragment();
 let carrito = {}
 //Recibir informacion del Json donde guardamos nuestros arrays de objetos
@@ -18,31 +18,31 @@ const fetchData = async () =>{
     try {
         const res = await fetch("prueba.json");
         const data = await res.json();        
-        pintarCards(data);
+        mostrarProductos(data);
     } catch (error) {
         console.log(error);        
     }  
  } 
 
-const pintarCards = data =>{
+const mostrarProductos = data =>{
     data.forEach(producto => {
-    templateCard.querySelector("h5").textContent = producto.title;
-    templateCard.querySelector("p").textContent = producto.precio;
-    templateCard.querySelector("img").setAttribute("src", producto.thumbnailUrl);
-    templateCard.querySelector(".btn-dark").dataset.id = producto.id;
-    const clone = templateCard.cloneNode(true); 
+    tarjetaProductos.querySelector("h5").textContent = producto.title;
+    tarjetaProductos.querySelector("p").textContent = producto.precio;
+    tarjetaProductos.querySelector("img").setAttribute("src", producto.thumbnailUrl);
+    tarjetaProductos.querySelector(".btn-primary").dataset.id = producto.id;
+    const clone = tarjetaProductos.cloneNode(true); 
     fragment.appendChild(clone);
     });    
-    cards.appendChild(fragment);
+    tarjetas.appendChild(fragment);
  }
  //Eventos
 
-cards.addEventListener("click", e => {
+tarjetas.addEventListener("click", e => {
     addCarrito(e);
 });
-items.addEventListener('click', e => { btnAumentarDisminuir(e) });
+mercaderia.addEventListener('click', e => { btnAumentarDisminuir(e) });
 const addCarrito = e => {
-        if (e.target.classList.contains(`btn-dark`)){
+        if (e.target.classList.contains(`btn-primary`)){
             setCarrito(e.target.parentElement);
         }
         e.stopPropagation();
@@ -50,7 +50,7 @@ const addCarrito = e => {
 
 const setCarrito = (objeto) => {        
 const producto = {
-        id: objeto.querySelector(".btn-dark").dataset.id,
+        id: objeto.querySelector(".btn-primary").dataset.id,
         title: objeto.querySelector("h5").textContent,
         precio: objeto.querySelector("p").textContent,
         cantidad: 1
@@ -65,7 +65,7 @@ const producto = {
     
     }
     const pintarCarrito = () => {
-    items.innerHTML = "";
+    mercaderia.innerHTML = "";
         Object.values(carrito).forEach(producto => {
             templateCarrito.querySelector("th").textContent = producto.id;
             templateCarrito.querySelectorAll("td")[0].textContent = producto.title;
@@ -76,7 +76,7 @@ const producto = {
             const clone = templateCarrito.cloneNode(true);
             fragment.appendChild(clone);
         })
-        items.appendChild(fragment);
+        mercaderia.appendChild(fragment);
         pintarFooter();
         localStorage.setItem('carrito', JSON.stringify(carrito));
     }
@@ -90,9 +90,9 @@ const producto = {
     }    
     const nCantidad = Object.values(carrito).reduce((acc, {cantidad}) => acc + cantidad, 0);
     const nPrecio = Object.values(carrito).reduce((acc, {cantidad, precio}) => acc + cantidad * precio ,0);
-    templateFooter.querySelectorAll("td")[0].textContent = nCantidad;
-    templateFooter.querySelector("span").textContent = nPrecio;
-    const clone = templateFooter.cloneNode(true);
+    calculadoraPie.querySelectorAll("td")[0].textContent = nCantidad;
+    calculadoraPie.querySelector("span").textContent = nPrecio;
+    const clone = calculadoraPie.cloneNode(true);
     fragment.appendChild(clone);
     footer.appendChild(fragment);
     const btnVaciar = document.getElementById("vaciar-carrito");
