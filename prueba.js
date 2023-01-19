@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () =>{
     fetchData();
     if (localStorage.getItem('carrito')) {
         carrito = JSON.parse(localStorage.getItem('carrito'));
-        pintarCarrito()
+        mostrarCarrito()
     }
 });
 const fetchData = async () =>{    
@@ -40,7 +40,7 @@ const mostrarProductos = data =>{
 tarjetas.addEventListener("click", e => {
     addCarrito(e);
 });
-mercaderia.addEventListener('click', e => { btnAumentarDisminuir(e) });
+mercaderia.addEventListener('click', e => { btnSubeBaja(e) });
 const addCarrito = e => {
         if (e.target.classList.contains(`btn-primary`)){
             setCarrito(e.target.parentElement);
@@ -61,10 +61,10 @@ const producto = {
     }
     
     carrito[producto.id] = {...producto};
-    pintarCarrito();
+    mostrarCarrito();
     
     }
-    const pintarCarrito = () => {
+    const mostrarCarrito = () => {
     mercaderia.innerHTML = "";
         Object.values(carrito).forEach(producto => {
             templateCarrito.querySelector("th").textContent = producto.id;
@@ -77,15 +77,15 @@ const producto = {
             fragment.appendChild(clone);
         })
         mercaderia.appendChild(fragment);
-        pintarFooter();
+        mostrarSuma();
         localStorage.setItem('carrito', JSON.stringify(carrito));
     }
 
-    const pintarFooter = () => {
+    const mostrarSuma = () => {
         footer.innerHTML = ``;
         if (Object.keys(carrito).length === 0) {
             footer.innerHTML = `        
-        <th scope= "row" colspan = "5">Carrito vacio con InnterHTML</th>;`;
+        <th scope= "row" colspan = "5">PON AQUI TU MERCADERIA AVENTURERO Y NO EN TU BOLSILLOS</th>;`;
         return;
     }    
     const nCantidad = Object.values(carrito).reduce((acc, {cantidad}) => acc + cantidad, 0);
@@ -95,18 +95,25 @@ const producto = {
     const clone = calculadoraPie.cloneNode(true);
     fragment.appendChild(clone);
     footer.appendChild(fragment);
+    const btnComprar = document.getElementById("comprar");
+    btnComprar.addEventListener("click", ()=>{
+        carrito = {};
+        mostrarCarrito();
+        sweetAlertComprar();
+    })
     const btnVaciar = document.getElementById("vaciar-carrito");
     btnVaciar.addEventListener("click",() => {
-    carrito = {}
-    pintarCarrito();
+    carrito = {};
+    mostrarCarrito();
+    sweetAlertVaciar();
     })
     }
-    const btnAumentarDisminuir = e => {        
+    const btnSubeBaja = e => {        
         if (e.target.classList.contains('btn-info')) {            
             const producto = carrito[e.target.dataset.id];
             producto.cantidad++;         
             carrito[e.target.dataset.id] = {...producto};
-            pintarCarrito();
+            mostrarCarrito();
         }
     
         if (e.target.classList.contains('btn-danger')) {
@@ -117,7 +124,23 @@ const producto = {
             } else {
                 carrito[e.target.dataset.id] = {...producto};
             }
-            pintarCarrito();
+            mostrarCarrito();
         }
         e.stopPropagation();
+    }
+    const sweetAlertComprar = () =>{
+        Swal.fire({
+            imageUrl: 'https://i.ytimg.com/vi/5sut_prgrmI/maxresdefault.jpg',
+            imageHeight: 300,
+            imageAlt: 'A tall image',
+            text: 'Ha sido un honor forjar mis productos para ti, aventurero',
+          })
+    }
+    const sweetAlertVaciar = () =>{
+        Swal.fire({
+            imageUrl: 'https://s1.1zoom.me/b3337/106/Men_Blacksmith_524531_600x800.jpg',
+            imageHeight: 300,
+            imageAlt: 'A tall image',
+            text: 'Anda pa ya, anda pa ya Bob',
+          })
     }
